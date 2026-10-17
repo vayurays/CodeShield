@@ -1,0 +1,15 @@
+## Build and output directories
+bin/
+obj/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.idea/
+
+## Obfuscated artifacts produced during testing
+*.Obfuscated.*
+*.Protected.*
+*.map.json

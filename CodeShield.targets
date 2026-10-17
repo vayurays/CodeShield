@@ -1,0 +1,39 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    CodeShield MSBuild Integration Targets
+    Include this file in your project or import it to automate obfuscation during Release builds.
+    Usage in your .csproj:
+      <Import Project="path\to\CodeShield.targets" Condition="Exists('path\to\CodeShield.targets')" />
+  -->
+
+  <PropertyGroup>
+    <!-- Set to true to enable obfuscation on build -->
+    <CodeShieldEnabled Condition="'$(CodeShieldEnabled)' == '' And '$(Configuration)' == 'Release'">true</CodeShieldEnabled>
+    <!-- CodeShield CLI executable path (defaults to codeshield on PATH or relative tools dir) -->
+    <CodeShieldCliPath Condition="'$(CodeShieldCliPath)' == ''">codeshield</CodeShieldCliPath>
+    <!-- Optional custom config file path -->
+    <CodeShieldConfigFile Condition="'$(CodeShieldConfigFile)' == '' And Exists('$(ProjectDir)codeshield.json')">$(ProjectDir)codeshield.json</CodeShieldConfigFile>
+    <!-- Additional arguments -->
+    <CodeShieldExtraArgs Condition="'$(CodeShieldExtraArgs)' == ''">--encrypt-strings</CodeShieldExtraArgs>
+  </PropertyGroup>
+
+  <Target Name="CodeShieldObfuscate" AfterTargets="AfterBuild" Condition="'$(CodeShieldEnabled)' == 'true'">
+    <Message Importance="High" Text="[CodeShield] Obfuscating target assembly: $(TargetPath)..." />
+
+    <!-- Build CLI command parameters -->
+    <PropertyGroup>
+      <_CodeShieldCmd>"$(CodeShieldCliPath)" -i "$(TargetPath)" -o "$(TargetPath)"</_CodeShieldCmd>
+      <_CodeShieldCmd Condition="'$(CodeShieldConfigFile)' != ''">$(_CodeShieldCmd) -c "$(CodeShieldConfigFile)"</_CodeShieldCmd>
+      <_CodeShieldCmd Condition="'$(CodeShieldExtraArgs)' != ''">$(_CodeShieldCmd) $(CodeShieldExtraArgs)</_CodeShieldCmd>
+    </PropertyGroup>
+
+    <!-- Execute CodeShield CLI -->
+    <Exec Command="$(_CodeShieldCmd)"
+          WorkingDirectory="$(ProjectDir)"
+          StandardOutputImportance="Low"
+          StandardErrorImportance="High"
+          ContinueOnError="false" />
+
+    <Message Importance="High" Text="[CodeShield] Obfuscation finished successfully for $(TargetFileName)!" />
+  </Target>
+</Project>

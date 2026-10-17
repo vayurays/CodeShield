@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/CodeShieldSampleApp/CodeShieldSampleApp.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/CodeShieldCli/CodeShieldCli.csproj" />
+    <Project Path="src/CodeShieldCore/CodeShieldCore.csproj" />
+    <Project Path="src/CodeShieldUi/CodeShieldUi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CodeShieldTests/CodeShieldTests.csproj" />
+  </Folder>
+</Solution>
